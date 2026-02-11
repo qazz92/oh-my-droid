@@ -11,7 +11,7 @@ Coordinate complex sessions with parallel task execution support:
 
 1. **Initialize** session context
 2. **Allocate** agent resources
-3. **Launch parallel tasks** using `/task-bg` command
+3. **Launch parallel tasks** using `python hooks/background-manager.py launch`
 4. **Monitor progress** across multiple agents
 5. **Collect results** from background tasks
 6. **Handle** handoffs between agents
@@ -21,15 +21,15 @@ Coordinate complex sessions with parallel task execution support:
 
 For tasks that can run independently, launch them in parallel:
 
-```markdown
-/task-bg "Find Python files" "Find all .py files in the current directory"
-/task-bg "Find auth patterns" "Find authentication implementations..."
-/task-bg "Check tests" "Analyze test coverage..."
+```bash
+python hooks/background-manager.py launch "Find Python files" "Find all .py files in the current directory" explore "main"
+python hooks/background-manager.py launch "Find auth patterns" "Find authentication implementations..." explore "main"
+python hooks/background-manager.py launch "Check tests" "Analyze test coverage..." explore "main"
 ```
 
-All tasks run concurrently. Monitor progress with:
+All tasks run in parallel. Monitor progress:
 - `python hooks/background-manager.py list` - View all running tasks
-- `python hooks/background-manager.py status <task_id>` - Check specific task
+- `python hooks/background-manager.py output <task_id>` - Check specific task output
 
 ## Orchestration pattern:
 ```markdown
