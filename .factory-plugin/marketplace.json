@@ -1,0 +1,14 @@
+{
+  "name": "oh-my-droid",
+  "description": "Factory CLI optimization plugins with productivity tools and automation",
+  "owner": {
+    "name": "qazz92"
+  },
+  "plugins": [
+    {
+      "name": "oh-my-droid",
+      "description": "Factory CLI optimization plugin with productivity tools and automation",
+      "source": "./oh-my-droid"
+    }
+  ]
+}
