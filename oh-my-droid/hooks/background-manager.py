@@ -104,7 +104,7 @@ class BackgroundManager:
     
     def _generate_task_id(self) -> str:
         """Generate a unique task ID."""
-        timestamp = int(time.time() * 1000).to_string(36)
+        timestamp = format(int(time.time() * 1000), 'x')  # 36진수
         random = uuid.uuid4().hex[:6]
         return f"bg_{timestamp}{random}"
     
