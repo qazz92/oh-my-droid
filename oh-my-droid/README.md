@@ -6,7 +6,7 @@ Factory CLI optimization plugin with productivity tools and automation.
 
 ```bash
 # Add marketplace
-droid plugin marketplace add /Users/rokhun/dev/local-droid-marketplace/oh-my-droid
+droid plugin marketplace add https://github.com/qazz92/oh-my-droid
 
 # Install plugin
 droid plugin install oh-my-droid@oh-my-droid --scope user
