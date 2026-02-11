@@ -151,6 +151,7 @@ class BackgroundManager:
         prompt: str,
         agent: str,
         parent_session_id: str,
+        autonomy_level: str = "medium",
         model: Optional[str] = None
     ) -> dict:
         """Launch a new background task and execute the agent."""
@@ -174,22 +175,31 @@ class BackgroundManager:
         self.tasks[task_id] = task
         self._persist_task(task)
         
-        # Execute the agent in background
+        # Execute the agent in background using droid exec
         try:
             # Escape quotes for shell command
             escaped_prompt = prompt.replace('"', '\\"')
-            cmd = [
-                "droid",
-                "task",
-                agent,
-                escaped_prompt
-            ]
+            
+            # Output file for capturing stdout/stderr
+            output_file = str(BACKGROUND_TASKS_DIR / f"{task_id}.out")
+            
+            cmd = f'droid exec --auto {autonomy_level} -- "{escaped_prompt}" > "{output_file}" 2>&1 &'
+            
             subprocess.Popen(
                 cmd,
+                shell=True,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 start_new_session=True
             )
+            
+            # Store output file path in task progress
+            task.progress = {
+                "toolCalls": 0,
+                "lastUpdate": now,
+                "outputFile": output_file
+            }
+            self._persist_task(task)
         except Exception as e:
             print(f"Warning: Failed to launch agent: {e}", file=sys.stderr)
         
@@ -414,17 +424,18 @@ def output_json(data: dict) -> None:
 def cmd_launch(args: list[str]) -> None:
     """Launch a new background task."""
     if len(args) < 4:
-        output_json({"error": "Usage: launch <description> <prompt> <agent> <parent_session_id> [model]"})
+        output_json({"error": "Usage: launch <description> <prompt> <agent> <parent_session_id> [autonomy_level] [model]"})
         sys.exit(1)
     
     description = args[0]
     prompt = args[1]
     agent = args[2]
     parent_session_id = args[3]
-    model = args[4] if len(args) > 4 else None
+    autonomy_level = args[4] if len(args) > 4 else "medium"
+    model = args[5] if len(args) > 5 else None
     
     manager = BackgroundManager()
-    result = manager.launch(description, prompt, agent, parent_session_id, model)
+    result = manager.launch(description, prompt, agent, parent_session_id, autonomy_level, model)
     output_json(result)
 
 
@@ -459,6 +470,45 @@ def cmd_status(args: list[str]) -> None:
         output_json(task)
     else:
         output_json({"error": f"Task not found: {task_id}"})
+
+
+def cmd_output(args: list[str]) -> None:
+    """Get output of a task from its output file."""
+    if len(args) < 1:
+        output_json({"error": "Usage: output <task_id>"})
+        sys.exit(1)
+    
+    task_id = args[0]
+    manager = BackgroundManager()
+    task = manager.get_task(task_id)
+    
+    if not task:
+        output_json({"error": f"Task not found: {task_id}"})
+        sys.exit(1)
+    
+    output_file = None
+    if task.progress and "outputFile" in task.progress:
+        output_file = task.progress["outputFile"]
+    
+    if not output_file:
+        output_file = str(BACKGROUND_TASKS_DIR / f"{task_id}.out")
+    
+    import os
+    if os.path.exists(output_file):
+        with open(output_file, 'r') as f:
+            content = f.read()
+        output_json({
+            "taskId": task_id,
+            "output": content,
+            "status": task.status
+        })
+    else:
+        output_json({
+            "taskId": task_id,
+            "output": None,
+            "status": task.status,
+            "error": f"Output file not found: {output_file}"
+        })
 
 
 def cmd_list(args: list[str]) -> None:
@@ -534,6 +584,7 @@ def main():
         "launch": cmd_launch,
         "complete": cmd_complete,
         "status": cmd_status,
+        "output": cmd_output,
         "list": cmd_list,
         "prune": cmd_prune,
         "cleanup": cmd_cleanup,
@@ -544,7 +595,7 @@ def main():
         commands[command](args)
     else:
         print(f"Unknown command: {command}")
-        print("Available commands: launch, complete, status, list, prune, cleanup, hook-complete")
+        print("Available commands: launch, complete, status, output, list, prune, cleanup, hook-complete")
         sys.exit(1)
 
 

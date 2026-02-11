@@ -29,12 +29,12 @@ For independent tasks (can run simultaneously):
 
 ```markdown
 # Launch multiple independent tasks at once
-/task-bg "explore auth patterns" explore "Find auth implementations..."
-/task-bg "find JWT docs" librarian "Find JWT best practices..."
-/task-bg "check tests" test-engineer "Analyze test coverage..."
+/task-bg "Find Python files" "Find all .py files in the current directory"
+/task-bg "Find auth patterns" "Find authentication implementations..."
+/task-bg "Check tests" "Analyze test coverage..."
 
 # Continue working while they run
-# Check results: background-manager.py list/status
+# Check results: python hooks/background-manager.py list
 ```
 
 ## When to Use Parallel

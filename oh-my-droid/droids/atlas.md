@@ -22,14 +22,14 @@ Coordinate complex sessions with parallel task execution support:
 For tasks that can run independently, launch them in parallel:
 
 ```markdown
-/task-bg "explore auth patterns" explore "Find authentication implementations..."
-/task-bg "find JWT docs" librarian "Find JWT security best practices..."
-/task-bg "check tests" test-engineer "Analyze test coverage..."
+/task-bg "Find Python files" "Find all .py files in the current directory"
+/task-bg "Find auth patterns" "Find authentication implementations..."
+/task-bg "Check tests" "Analyze test coverage..."
 ```
 
 All tasks run concurrently. Monitor progress with:
-- `background-manager.py list` - View all running tasks
-- `background-manager.py status <task_id>` - Check specific task
+- `python hooks/background-manager.py list` - View all running tasks
+- `python hooks/background-manager.py status <task_id>` - Check specific task
 
 ## Orchestration pattern:
 ```markdown
