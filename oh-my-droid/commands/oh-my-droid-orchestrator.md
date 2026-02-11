@@ -1,58 +1,26 @@
 ---
-description: Orchestrate task execution based on approved plan and review
-argument-hint: <approved plan and task>
+description: Execute approved plan by delegating subtasks to specialist droids with parallel coordination
+argument-hint: <approved plan or task breakdown>
 ---
 
-# Orchestrator Command
+Delegate this to the **orchestrator** droid via the Task tool.
 
-Execute tasks based on approved plan and completed review.
+Execute plan: $ARGUMENTS
 
-## Workflow
+The orchestrator must:
+1. **Analyze**: Parse the plan into subtasks, identify dependencies and parallelism
+2. **Select droids**: Match each subtask to the right specialist droid
+3. **Execute**: Fire independent tasks simultaneously via Task tool, run dependent tasks sequentially
+4. **Monitor**: Check results from each droid, handle failures
+5. **Aggregate**: Combine results into a coherent final report
+6. **Verify**: Ensure all subtasks completed and results are consistent
 
-```
-1. /oh-my-droid-plan       # User creates plan
-2. /oh-my-droid-review    # User reviews plan
-3. /oh-my-droid-orchestrator  # Execute based on approved plan
-```
+Droid selection:
+- Simple changes: executor-low
+- Standard work: executor-med (default)
+- Complex work: executor-high / hephaestus
+- Research: explore / librarian
+- Testing: test-engineer / verifier
+- Review: code-reviewer / security-auditor
 
-## Usage
-
-```bash
-/oh-my-droid-orchestrator "<approved plan>"
-```
-
-## What to Provide
-
-- Approved plan from `/oh-my-droid-plan`
-- Review confirmation from `/oh-my-droid-review`
-- Task breakdown and subtasks
-
-## Execution Steps
-
-1. Parse approved plan
-2. Allocate droids to subtasks
-3. Execute subtasks sequentially or in parallel
-4. Monitor progress
-5. Report completion status
-
-## Droid Allocation
-
-| Subtask Type | Droid |
-|-------------|-------|
-| Implementation | executor-med, executor-high |
-| Search/Research | explorer, librarian |
-| Testing | test-engineer, verifier |
-| Documentation | docs-writer |
-| Security | security-auditor |
-
-## Example
-
-```
-User: "/oh-my-droid-orchestrator Based on approved plan:
-- Subtask 1: Create API endpoints (executor-med)
-- Subtask 2: Add authentication (executor-high)
-- Subtask 3: Write unit tests (test-engineer)
-- Subtask 4: Verify tests pass (verifier)"
-```
-
-Then orchestrator executes each subtask with appropriate droids.
+Fire independent subtasks in parallel. Do NOT serialize independent work.

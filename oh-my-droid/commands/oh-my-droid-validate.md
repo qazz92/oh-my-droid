@@ -1,17 +1,18 @@
 ---
-description: Validate a plan or proposal for gaps and risks with the momus droid
-argument-hint: <plan description or file>
+description: Evidence-based verification - ensure implementation meets acceptance criteria with fresh proof
+argument-hint: <implementation to verify or acceptance criteria>
 ---
 
-Delegate this to the **momus** droid.
+Delegate this to the **verifier** droid via the Task tool.
 
 Validate: $ARGUMENTS
 
-Momus should check:
-1. Completeness - are all requirements addressed?
-2. Feasibility - is the timeline realistic?
-3. Risks - are mitigations defined?
-4. Quality - is there a testing strategy?
-5. Gaps - what's missing?
+The verifier must:
+1. **Define**: What tests prove this works? What edge cases matter? What could regress?
+2. **Execute**: Run test suite, build command, and related tests
+3. **Gap analysis**: For each requirement -- VERIFIED (passes), PARTIAL (incomplete), MISSING (no test)
+4. **Verdict**: PASS or FAIL with specific evidence for every acceptance criterion
 
-Report pass/fail with specific gaps and improvement suggestions.
+No approval without fresh evidence. Reject if: "should/probably/seems to" is used, no fresh test output, claims without results.
+
+Output: Status (PASS/FAIL/INCOMPLETE), Evidence, Acceptance Criteria status, Gaps, Recommendation.

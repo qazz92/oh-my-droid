@@ -1,16 +1,20 @@
 ---
-description: Generate comprehensive summary of development session
+description: Generate comprehensive summary of the current development session
 argument-hint: --brief --export
 ---
 
-Generate session summary:
+Generate a session summary covering:
 
-1. **Duration** and files modified
-2. **Work Completed** - tasks finished
-3. **Key Decisions** - architectural choices
-4. **Pending Items** - follow-up tasks
-5. **Code Changes** - diff summary
+1. **Duration**: Session time and files modified count
+2. **Work Completed**: Tasks finished with outcomes
+3. **Key Decisions**: Architectural choices and rationale
+4. **Code Changes**: Files created, modified, deleted with brief descriptions
+5. **Pending Items**: Unfinished tasks and follow-up actions
+6. **Verification Status**: Tests passing, build status, known issues
+
+Review the TODO list, git diff, and recent tool usage to compile the summary.
 
 Options:
-- `--brief`: Compact summary
-- `--export json|markdown`: Export format
+- `--brief`: Compact 5-line summary
+- `--export json`: Machine-readable format
+- `--export markdown`: Full markdown report

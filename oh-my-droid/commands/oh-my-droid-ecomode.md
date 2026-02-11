@@ -5,7 +5,7 @@ argument-hint: <task description>
 
 You MUST invoke the **ecomode** skill using the Skill tool:
 
-Skill: oh-my-droid:ecomode
+Skill: ecomode
 
 User task: $ARGUMENTS
 

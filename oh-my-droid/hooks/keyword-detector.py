@@ -100,7 +100,7 @@ def create_skill_invocation(skill_name, original_prompt):
 
 You MUST invoke the skill using the Skill tool:
 
-Skill: oh-my-droid:{skill_name}
+Skill: oh-my-droid-{skill_name}
 
 User request:
 {original_prompt}

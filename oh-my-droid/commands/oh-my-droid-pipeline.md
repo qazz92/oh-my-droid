@@ -5,7 +5,7 @@ argument-hint: <task description>
 
 You MUST invoke the **pipeline** skill using the Skill tool:
 
-Skill: oh-my-droid:pipeline
+Skill: pipeline
 
 User task: $ARGUMENTS
 

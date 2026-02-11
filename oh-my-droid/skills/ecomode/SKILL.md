@@ -1,86 +1,79 @@
 ---
 name: ecomode
-description: Use for efficient, token-conscious task execution. Uses smaller models and minimal operations to save tokens.
+description: Token-efficient execution modifier. Optimizes droid routing to prefer simpler, cheaper tiers while maintaining quality.
 ---
 
-You are **ecomode**, a token-efficient execution system.
+<Purpose>
+Ecomode is a MODIFIER, not a standalone execution mode. It overrides default droid selection to prefer simpler tiers, reducing token usage while maintaining quality for tasks that don't require maximum capability.
+</Purpose>
 
-## Core Philosophy
+<Use_When>
+- User says "eco", "ecomode", "efficient", "save tokens", "budget mode"
+- Tasks are straightforward and don't need complex reasoning
+- Running multiple small tasks where token costs add up
+- Combining with other modes: "eco ralph", "eco ultrawork", "eco autopilot"
+</Use_When>
 
-**"Do more with less"**
+<Do_Not_Use_When>
+- Task genuinely requires deep reasoning or complex analysis
+- Security-sensitive changes that need thorough review
+- Architecture decisions that affect the entire system
+</Do_Not_Use_When>
 
-- Use **Haiku** for simple tasks
-- Minimize tool calls
-- Focus on precision over verbosity
-- Avoid redundant operations
+<Why_This_Exists>
+Not every task needs the most capable droid. Simple changes, searches, and documentation can be handled by lighter droids. Ecomode systematically downtiers droid selection to save tokens without sacrificing correctness for appropriate tasks.
+</Why_This_Exists>
 
-## Model Selection Strategy
+<Routing_Rules>
+| Default Tier | Ecomode Override |
+|-------------|-----------------|
+| executor-high / hephaestus | executor-med first, escalate only if needed |
+| executor-med | executor-low first, executor-med if fails |
+| executor-low | executor-low (no change) |
 
-| Task Complexity | Model | Tokens Saved |
-|---------------|-------|-------------|
-| Simple read/search | Haiku | ~90% |
-| Medium implementation | Sonnet | ~50% |
-| Complex debugging | Opus (if needed) | ~30% |
+**ALWAYS prefer lower tiers. Only escalate when task genuinely requires it.**
+</Routing_Rules>
 
-## When to Use
+<Combining_With_Other_Modes>
+| Combination | Effect |
+|------------|--------|
+| `eco ralph` | Ralph loop with cheaper droids |
+| `eco ultrawork` | Parallel execution with cheaper droids |
+| `eco autopilot` | Full autonomous with cost optimization |
+</Combining_With_Other_Modes>
 
-- Budget-concious projects
-- Large codebase exploration
-- Multiple similar tasks
-- Token-limited sessions
-
-## Optimization Techniques
-
-1. **Batch Operations**: Combine multiple reads into one
-2. **Precise Grep**: Use specific patterns, not broad searches
-3. **Smart Caching**: Check state before re-reading files
-4. **Minimize Context**: Only include relevant code snippets
-5. **Direct Editing**: Use Edit tool with exact line numbers
-
-## State Integration
-
-```python
-task_id = os.getenv("STATE_TASK_ID")
-if task_id:
-    # Use state to avoid re-reading
-    existing = StateManager().get_task(task_id)
-    cached_data = existing.get("cached_analysis", {})
-    
-    # Only analyze new parts
-    new_files = [f for f in files if f not in cached_data]
+<Droid_Selection_In_Ecomode>
+**Preference order:**
 ```
+PREFERRED - Use for most tasks:
+  executor-low, basic-searcher, basic-reader
 
-## Example Workflow
+FALLBACK - Only if LOW fails:
+  executor-med, explore
 
+AVOID - Only for planning/critique if essential:
+  executor-high, hephaestus, prometheus
 ```
-User: "What files use the User model?"
+</Droid_Selection_In_Ecomode>
 
-Ecomode approach:
-1. Check state for cached analysis
-2. Grep for "User" or "user" (Haiku)
-3. Return results from state if available
-4. Only search new files if needed
+<Token_Savings_Tips>
+1. Batch similar tasks to one droid instead of spawning many
+2. Use basic-searcher for file discovery, not explorer
+3. Prefer executor-low for simple changes -- only upgrade if it fails
+4. Use docs-writer for documentation tasks
+5. Avoid hephaestus unless task genuinely requires architecture-level reasoning
+</Token_Savings_Tips>
 
-Token savings:
-- Standard: 3 Grep calls
-- Ecomode: 1-2 Grep calls (from cache)
-```
+<Steps>
+1. Analyze the task complexity honestly
+2. Start with the lowest viable droid tier
+3. If the droid fails or task clearly needs more capability, escalate ONE tier
+4. Apply lightweight verification (build + affected tests only)
+</Steps>
 
-## Output Format
-
-```json
-{
-  "model_used": "haiku",
-  "token_estimate": "1500 tokens",
-  "actual_tokens": "800 tokens",
-  "saved_tokens": "47% reduction"
-}
-```
-
-## Best Practices
-
-- ✅ **Always check state** before using tools
-- ✅ **Use Haiku** for simple tasks
-- ✅ **Batch operations** when possible
-- ✅ **Prefer reading** over rewriting
-- ✅ **Document cache strategy** clearly
+<Final_Checklist>
+- [ ] Used the lowest viable droid tier
+- [ ] Only escalated when clearly needed
+- [ ] Build passes
+- [ ] Affected tests pass
+</Final_Checklist>

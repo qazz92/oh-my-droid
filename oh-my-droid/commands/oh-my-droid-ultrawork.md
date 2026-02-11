@@ -5,7 +5,7 @@ argument-hint: <task description>
 
 You MUST invoke the **ultrawork** skill using the Skill tool:
 
-Skill: oh-my-droid:ultrawork
+Skill: ultrawork
 
 User task: $ARGUMENTS
 

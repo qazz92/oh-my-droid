@@ -1,18 +1,21 @@
 ---
-description: Systematic code refactoring with safety guarantees
-argument-hint: <target>
+description: Systematic code refactoring with safety guarantees - executor-med handles implementation
+argument-hint: <target file, function, or module>
 ---
 
-Refactor `$ARGUMENTS` with safety:
+Delegate this to the **executor-med** droid via the Task tool.
 
-1. Analyze current code structure
-2. Identify refactoring opportunities
-3. Apply safe transformations
-4. Verify tests still pass
+Refactor target: $ARGUMENTS
 
-Patterns:
-- extract-method, rename-variable
-- simplify-condition, remove-dead-code
-- async-await conversion
+The executor-med must follow a safe refactoring workflow:
+1. **Analyze**: Read current code, identify refactoring opportunities
+2. **Plan**: List specific transformations (extract method, rename, simplify condition, remove dead code)
+3. **Verify baseline**: Run tests BEFORE refactoring to establish green baseline
+4. **Apply**: Make transformations one at a time, smallest viable diff
+5. **Verify each step**: Run tests after each transformation to catch regressions
+6. **Report**: List all changes with file:line references and verification results
 
-Safety levels: strict (suggestions only), moderate (safe), lax (all)
+Safety rules:
+- Tests must pass before AND after each transformation
+- No behavior changes unless explicitly requested
+- If tests fail after a transformation, revert and report

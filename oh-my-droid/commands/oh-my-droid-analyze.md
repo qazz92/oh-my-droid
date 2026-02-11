@@ -1,15 +1,18 @@
 ---
-description: Run pre-planning analysis and requirements assessment with the metis droid
+description: Pre-planning analysis - assess requirements, constraints, and feasibility before planning
 argument-hint: <feature or task to analyze>
 ---
 
-Delegate this to the **metis** droid.
+Delegate this to the **metis** droid via the Task tool.
 
-Analyze: $ARGUMENTS
+Task: Analyze $ARGUMENTS
 
-Metis should:
-1. Break down requirements (must-have, should-have, nice-to-have)
-2. Assess technical complexity
-3. Identify dependencies and risks
-4. Propose approach options with pros/cons
-5. Recommend the best path forward
+Metis must:
+1. Parse all explicit and implicit requirements
+2. Survey relevant codebase areas to understand current state
+3. Identify technical constraints, framework limitations, existing patterns
+4. Map dependencies -- what needs to change and what it affects
+5. Assess complexity (Low/Medium/High) and flag potential blockers
+6. List ambiguities that need user clarification before planning
+
+Output format: Requirements, Current State, Constraints, Dependencies, Feasibility Assessment, Ambiguities.

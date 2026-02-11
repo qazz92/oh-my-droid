@@ -1,95 +1,107 @@
 ---
 name: ralph
-description: Use when user wants persistent execution with verify/fix loops. Creates spec, executes task, verifies result, and fixes errors up to 3 times.
+description: Persistent execution loop until task completion with verification. Wraps parallel execution with automatic retry on failure and mandatory verification before completion.
 ---
 
-You are a persistent execution system that ensures task completion through verification and fix loops.
+<Purpose>
+Ralph is a persistence loop that keeps working on a task until it is fully complete and verified. It wraps parallel execution with session persistence, automatic retry on failure, and mandatory verification before completion.
+</Purpose>
 
-## Core Philosophy
+<Use_When>
+- Task requires guaranteed completion with verification (not just "do your best")
+- User says "ralph", "don't stop", "must complete", "finish this", or "keep going until done"
+- Work may span multiple iterations and needs persistence across retries
+- Task benefits from parallel execution with verification at the end
+</Use_When>
 
-- **Don't give up until task is verified complete**
-- **Max 3 fix attempts** to resolve issues
-- **Spec-based execution** with state tracking
-- **Parallel subtasks** when beneficial
+<Do_Not_Use_When>
+- User wants a full autonomous pipeline from idea to code -- use `autopilot` instead
+- User wants to explore or plan before committing -- use prometheus droid
+- User wants a quick one-shot fix -- delegate directly to executor-med
+- User wants manual control over completion -- use `ultrawork` directly
+</Do_Not_Use_When>
 
-## Workflow
+<Why_This_Exists>
+Complex tasks often fail silently: partial implementations get declared "done", tests get skipped, edge cases get forgotten. Ralph prevents this by looping until work is genuinely complete, requiring fresh verification evidence before allowing completion.
+</Why_This_Exists>
 
+<Execution_Policy>
+- Fire independent droid calls simultaneously -- never wait sequentially for independent work
+- Always select the right droid tier for the task complexity
+- Deliver the full implementation: no scope reduction, no partial completion, no deleting tests to make them pass
+- State is tracked in `.omd/state/ralph-state.json`
+</Execution_Policy>
+
+<Steps>
+1. **Review progress**: Check TODO list and any prior iteration state
+2. **Continue from where you left off**: Pick up incomplete tasks
+3. **Delegate in parallel**: Route tasks to specialist droids at appropriate tiers
+   - Simple changes: executor-low
+   - Standard work: executor-med (DEFAULT)
+   - Complex analysis: executor-high or hephaestus
+4. **Verify completion with fresh evidence**:
+   a. Identify what command proves the task is complete
+   b. Run verification (test, build, lint)
+   c. Read the output -- confirm it actually passed
+   d. Check: zero pending/in_progress TODO items
+5. **Droid verification** (mandatory):
+   - Spawn **verifier** droid to independently check all acceptance criteria
+   - For security-sensitive changes, also spawn **security-auditor**
+6. **On approval**: Clean up `.omd/state/ralph-state.json`
+7. **On rejection**: Fix the issues raised, then re-verify (max 3 attempts)
+</Steps>
+
+<Examples>
+<Good>
+Correct parallel delegation:
 ```
-1. User: /ralph "task description"
-
-2. Create Spec with intelligent-router analysis
-   └→ Save to state
-
-3. Execute with routed droid
-   └→ State: pending → executing
-
-4. Verify result
-   └→ Success? → Complete
-   └→ Failed? → Fix loop (max 3x)
-
-5. Final state: completed with result
+Task(subagent_type="executor-low", prompt="Add type export for UserConfig")
+Task(subagent_type="executor-med", prompt="Implement the caching layer for API responses")
+Task(subagent_type="executor-high", prompt="Refactor auth module to support OAuth2 flow")
 ```
+Why good: Three independent tasks fired simultaneously at appropriate tiers.
+</Good>
 
-## State Integration
-
-Use state-manager.py for tracking:
-```bash
-# Create task with routing
-python3 hooks/state-manager.py create "USER_TASK" "ROUTED_DROID" "MEDIUM" "Hybrid routing" "0.75"
-
-# Update progress
-python3 hooks/state-manager.py update TASK_ID progress=50 "Halfway through implementation"
-
-# Complete
-python3 hooks/state-manager.py complete-task TASK_ID "RESULT"
+<Good>
+Correct verification before completion:
 ```
-
-## Fix Loop Logic
-
+1. Run: npm test           -> Output: "42 passed, 0 failed"
+2. Run: npm run build      -> Output: "Build succeeded"
+3. Spawn verifier droid    -> Verdict: "PASS - all criteria verified"
+4. Clean up state files
 ```
-Attempt 1: Initial execution
-   ↓
-   Verify: verifier droid
-   ↓
-   Failed? → Attempt 2: Fix attempt
-   ↓
-   Verify again
-   ↓
-   Failed? → Attempt 3: Final fix
-   ↓
-   Verify again
-   ↓
-   Success? → COMPLETE
-   ↓
-   Still failed? → REPORT: Max attempts reached
+Why good: Fresh evidence at each step, droid verification, then clean exit.
+</Good>
+
+<Bad>
+Claiming completion without verification:
+"All changes look good, the implementation should work correctly. Task complete."
+Why bad: Uses "should" and "look good" -- no fresh test/build output, no droid verification.
+</Bad>
+
+<Bad>
+Sequential execution of independent tasks:
 ```
-
-## Droid Selection
-
-| Complexity | Droid |
-|------------|-------|
-| Low | executor-low, basic-searcher, basic-reader |
-| Medium | executor-med |
-| High | executor-high |
-
-## Usage Examples
-
-```bash
-# Simple fix with verify loop
-/ralph "fix the authentication bug"
-
-# Complex task requiring multiple iterations
-/ralph "optimize the database queries and add caching"
-
-# Task needing thorough verification
-/ralph "ensure all endpoints have proper error handling"
+Task(executor-low, "Add type export") -> wait ->
+Task(executor-med, "Implement caching") -> wait ->
+Task(executor-high, "Refactor auth")
 ```
+Why bad: Independent tasks should run in parallel, not sequentially.
+</Bad>
+</Examples>
 
-## Key Features
+<Escalation_And_Stop_Conditions>
+- Stop and report when a fundamental blocker requires user input (missing credentials, unclear requirements)
+- Stop when the user says "stop", "cancel", or "abort"
+- If the same issue recurs across 3+ attempts, report it as a fundamental problem
+- If verification droid rejects, fix issues and re-verify (do not stop)
+</Escalation_And_Stop_Conditions>
 
-- ✅ **Intelligent routing** to best droid automatically
-- ✅ **State tracking** throughout execution
-- ✅ **Verify/Fix loops** up to 3 attempts
-- ✅ **Spec preservation** in state
-- ✅ **Parallel subtasks** via background-manager when beneficial
-- ✅ **Final reporting** with complete result or error summary
+<Final_Checklist>
+- [ ] All requirements from the original task are met (no scope reduction)
+- [ ] Zero pending or in_progress TODO items
+- [ ] Fresh test run output shows all tests pass
+- [ ] Fresh build output shows success
+- [ ] Verifier droid approved (mandatory)
+- [ ] State files cleaned up
+</Final_Checklist>

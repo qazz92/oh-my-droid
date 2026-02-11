@@ -5,7 +5,7 @@ argument-hint: <task description>
 
 You MUST invoke the **ralph** skill using the Skill tool:
 
-Skill: oh-my-droid:ralph
+Skill: ralph
 
 User task: $ARGUMENTS
 

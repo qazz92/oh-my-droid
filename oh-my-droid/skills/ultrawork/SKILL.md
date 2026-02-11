@@ -1,124 +1,108 @@
 ---
 name: ultrawork
-description: Use for maximum parallel task execution. Decomposes complex tasks and executes subtasks in parallel using background-manager.py
+description: Parallel execution engine for high-throughput task completion. Runs multiple droids simultaneously for independent tasks.
 ---
 
-You are **ultrawork**, a maximum parallelism execution system.
+<Purpose>
+Ultrawork is a parallel execution engine that runs multiple droids simultaneously for independent tasks. It provides parallelism and smart droid routing but not persistence or verification loops -- those are provided by ralph (which includes ultrawork).
+</Purpose>
 
-## Core Strategy
+<Use_When>
+- Multiple independent tasks can run simultaneously
+- User says "ulw", "ultrawork", or wants parallel execution
+- You need to delegate work to multiple droids at once
+- Task benefits from concurrent execution
+</Use_When>
 
-**Break down complex tasks → Execute in parallel → Aggregate results**
+<Do_Not_Use_When>
+- Task requires guaranteed completion with verification -- use `ralph` instead (ralph includes ultrawork)
+- Task requires a full autonomous pipeline -- use `autopilot` instead
+- There is only one sequential task -- delegate directly to executor-med
+- User needs session persistence for resume -- use `ralph`
+</Do_Not_Use_When>
 
-## When to Use
+<Why_This_Exists>
+Sequential task execution wastes time when tasks are independent. Ultrawork enables firing multiple droids simultaneously, reducing total execution time. It is designed as a composable component that ralph and autopilot layer on top of.
+</Why_This_Exists>
 
-- Large codebases requiring multiple independent fixes
-- Parallel feature implementation across modules
-- Multiple file refactoring
-- Parallel testing
-- Bulk operations
+<Execution_Policy>
+- Fire all independent droid calls simultaneously -- never serialize independent work
+- Always select the right droid tier for task complexity
+- Run quick commands in foreground, long operations can run via Task tool
+</Execution_Policy>
 
-## Workflow
+<Steps>
+1. **Classify tasks by independence**: Identify which can run in parallel vs which have dependencies
+2. **Route to correct droids**:
+   - Simple changes: executor-low
+   - Standard implementation: executor-med (DEFAULT)
+   - Complex work: executor-high or hephaestus
+3. **Fire independent tasks simultaneously**: Launch all parallel-safe tasks at once via Task tool
+4. **Run dependent tasks sequentially**: Wait for prerequisites before launching dependent work
+5. **Verify when all tasks complete** (lightweight):
+   - Build passes
+   - Affected tests pass
+   - No new errors introduced
+</Steps>
+
+<Examples>
+<Good>
+Three independent tasks fired simultaneously:
+```
+Task(subagent_type="executor-low", prompt="Add missing type export for Config interface")
+Task(subagent_type="executor-med", prompt="Implement the /api/users endpoint with validation")
+Task(subagent_type="executor-med", prompt="Add integration tests for the auth middleware")
+```
+Why good: Independent tasks at appropriate tiers, all fired at once.
+</Good>
+
+<Bad>
+Sequential execution of independent work:
+```
+result1 = Task(executor-low, "Add type export")  # wait...
+result2 = Task(executor-med, "Implement endpoint")  # wait...
+result3 = Task(executor-med, "Add tests")  # wait...
+```
+Why bad: Independent tasks serialized, wasting time.
+</Bad>
+
+<Bad>
+Wrong tier selection:
+```
+Task(subagent_type="hephaestus", prompt="Add a missing semicolon")
+```
+Why bad: Overkill for a trivial fix. Use executor-low instead.
+</Bad>
+</Examples>
+
+<Escalation_And_Stop_Conditions>
+- When invoked directly (not via ralph), apply lightweight verification only
+- For full persistence and verification, recommend switching to `ralph`
+- If a task fails repeatedly, report the issue rather than retrying indefinitely
+</Escalation_And_Stop_Conditions>
+
+<Final_Checklist>
+- [ ] All parallel tasks completed
+- [ ] Build passes
+- [ ] Affected tests pass
+- [ ] No new errors introduced
+</Final_Checklist>
+
+<Advanced>
+## Relationship to Other Modes
 
 ```
-1. User: "ulw fix all errors in the codebase"
+ralph (persistence wrapper)
+ └── includes: ultrawork (this skill)
+     └── provides: parallel execution only
 
-2. Decompose task:
-   └→ Subtask 1: Fix auth errors (executor-med)
-   └→ Subtask 2: Fix API errors (executor-med)
-   └→ Subtask 3: Fix UI errors (executor-med)
+autopilot (autonomous execution)
+ └── includes: ralph
+     └── includes: ultrawork (this skill)
 
-3. Launch in parallel using background-manager:
-   python3 hooks/background-manager.py launch "Fix auth" "..." executor-med SESSION_ID
-   python3 hooks/background-manager.py launch "Fix API" "..." executor-med SESSION_ID
-   python3 hooks/background-manager.py launch "Fix UI" "..." executor-med SESSION_ID
-
-4. Monitor progress:
-   └→ Check state of each task
-
-5. Aggregate results:
-   └→ Combine all outputs into final report
+ecomode (modifier)
+ └── modifies: ultrawork's droid selection to prefer cheaper tiers
 ```
 
-## Decomposition Strategy
-
-```python
-def decompose_task(prompt: str) -> list:
-    """Break task into parallel subtasks"""
-
-    # Pattern 1: File-based decomposition
-    if "all files" in prompt.lower() or "entire codebase" in prompt.lower():
-        return [
-            ("Fix auth module", "modules/auth.py"),
-            ("Fix API module", "modules/api.py"),
-            ("Fix UI module", "modules/ui.py"),
-        ]
-
-    # Pattern 2: Error-based decomposition
-    if "errors" in prompt.lower():
-        error_types = identify_error_types(prompt)
-        return [(f"Fix {error}", get_module_for_error(error))
-                for error in error_types]
-
-    # Pattern 3: Feature-based decomposition
-    return decompose_by_features(prompt)
-```
-
-## Execution Pattern
-
-```python
-from background_manager import BackgroundManager
-
-manager = BackgroundManager()
-
-# Decompose task
-subtasks = decompose_task(USER_TASK)
-
-# Launch all in parallel
-task_ids = []
-for desc, prompt in subtasks:
-    result = manager.launch(
-        description=desc,
-        prompt=prompt,
-        droid="executor-med",
-        parent_session_id=CURRENT_SESSION
-    )
-    task_ids.append(result["taskId"])
-
-# Monitor all tasks
-completed = []
-for task_id in task_ids:
-    status = manager.get_status(task_id)
-    if status["status"] == "completed":
-        completed.append(manager.get_output(task_id))
-```
-
-## State Integration
-
-Create parent task tracking subtasks:
-```python
-python3 hooks/state-manager.py create "Parent task" "executor-med" "MEDIUM" "Parallel execution"
-
-# Then update with subtask IDs
-python3 hooks/state-manager.py update PARENT_TASK subtasks=[ID1,ID2,ID3]
-```
-
-## Output Format
-
-```json
-{
-  "parent_task": "PARENT_ID",
-  "subtasks": [
-    {"id": "TASK_1", "status": "completed", "result": "..."},
-    {"id": "TASK_2", "status": "running", "progress": 50},
-    {"id": "TASK_3", "status": "completed", "result": "..."}
-  ],
-  "summary": "Completed 2/3 subtasks, 1 still running"
-}
-```
-
-## Completion
-
-1. ✅ All subtasks completed
-2. ✅ Results aggregated
-3. ✅ Parent task marked complete
-4. ✅ Final report generated
+Ultrawork is the parallelism layer. Ralph adds persistence and verification. Autopilot adds the full lifecycle pipeline. Ecomode adjusts droid routing.
+</Advanced>
