@@ -19,7 +19,9 @@ import sys
 import uuid
 import time
 from datetime import datetime
+import subprocess
 from pathlib import Path
+from datetime import datetime
 from typing import Optional
 from dataclasses import dataclass, field, asdict
 from enum import Enum
@@ -151,7 +153,7 @@ class BackgroundManager:
         parent_session_id: str,
         model: Optional[str] = None
     ) -> dict:
-        """Launch a new background task."""
+        """Launch a new background task and execute the agent."""
         task_id = self._generate_task_id()
         session_id = f"ses_{uuid.uuid4().hex[:12]}"
         now = datetime.now().isoformat()
@@ -171,6 +173,25 @@ class BackgroundManager:
         
         self.tasks[task_id] = task
         self._persist_task(task)
+        
+        # Execute the agent in background
+        try:
+            # Escape quotes for shell command
+            escaped_prompt = prompt.replace('"', '\\"')
+            cmd = [
+                "droid",
+                "task",
+                agent,
+                escaped_prompt
+            ]
+            subprocess.Popen(
+                cmd,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True
+            )
+        except Exception as e:
+            print(f"Warning: Failed to launch agent: {e}", file=sys.stderr)
         
         return {
             "taskId": task_id,
