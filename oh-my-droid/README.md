@@ -2,143 +2,117 @@
 
 Factory CLI optimization plugin with productivity tools and automation.
 
-## Features
-
-### Commands
-
-| Command | Description |
-|---------|-------------|
-| `/code-review` | Comprehensive code review |
-| `/refactor` | Systematic code refactoring |
-| `/session-summary` | Generate session summaries |
-
-### Skills
-
-| Skill | Description |
-|-------|-------------|
-| `code-cleanup` | Automated code cleanup |
-| `test-automation` | Test generation |
-| `documentation` | Documentation generation |
-| `security-scanner` | Security scanning |
-| `git-master` | Git expertise |
-| `browser-automation` | Browser automation |
-| `visual-design` | UI/UX design |
-| `skill-creation` | Skill generation |
-| `human-writing` | Natural writing |
-| `session-navigation` | Session management |
-| `continuous-learning` | Self-improvement |
-
-### Droids
-
-| Droid | Description |
-|-------|-------------|
-| `code-reviewer` | Focused code reviewer |
-| `security-auditor` | Security analysis |
-| `test-engineer` | Testing workflows |
-| `docs-writer` | Documentation |
-| `sisyphus` | Task orchestrator |
-| `oracle` | Debugging expert |
-| `librarian` | Research specialist |
-| `explore` | Fast code search |
-| `prometheus` | Strategic planning |
-| `metis` | Pre-planning analysis |
-| `momus` | Plan validation |
-| `atlas` | Session orchestrator |
-| `hephaestus` | Deep coder |
-
-### Hooks
-
-| Hook Script | Description |
-|------------|-------------|
-| `format-on-write.sh` | Auto-format code on save |
-| `lint-on-edit.sh` | Auto-lint code on edit |
-| `session-summary.sh` | Generate session summaries |
-| `notification.sh` | Desktop notifications |
-| `protect-files.sh` | Block protected files |
-
-## Installation
+## Quick Start
 
 ```bash
 # Add marketplace
-droid plugin marketplace add /Users/rokhun/dev/oh-my-droid
+droid plugin marketplace add /Users/rokhun/dev/local-droid-marketplace/oh-my-droid
 
 # Install plugin
 droid plugin install oh-my-droid@oh-my-droid --scope user
 ```
 
-## Hooks Setup
+## Usage
 
-Hooks are automatically loaded from the plugin. The hooks.json includes:
+```bash
+# Auto-route task to best droid
+/oh-my-droid-autopilot "fix authentication bug"
 
-```json
-{
-  "PreToolUse": [
-    {
-      "matcher": "Edit|Write",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${DROID_PLUGIN_ROOT}/hooks/protect-files.sh ${file_path}"
-        },
-        {
-          "type": "command",
-          "command": "${DROID_PLUGIN_ROOT}/hooks/format-on-write.sh ${file_path}"
-        }
-      ]
-    }
-  ],
-  "PostToolUse": [
-    {
-      "matcher": "Edit|Write",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${DROID_PLUGIN_ROOT}/hooks/lint-on-edit.sh ${file_path}"
-        }
-      ]
-    }
-  ],
-  "Stop": [
-    {
-      "matcher": "",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${DROID_PLUGIN_ROOT}/hooks/session-summary.sh"
-        }
-      ]
-    }
-  ],
-  "Notification": [
-    {
-      "matcher": "",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "${DROID_PLUGIN_ROOT}/hooks/notification.sh ${notification_message}"
-        }
-      ]
-    }
-  ]
-}
+# Persistent execution with verify/fix loops (max 3 attempts)
+/oh-my-droid-ralph "build a REST API"
+
+# Maximum parallel execution
+/oh-my-droid-ultrawork "fix all errors in codebase"
+
+# Token-efficient execution
+/oh-my-droid-ecomode "explain how this works"
+
+# Sequential staged execution
+/oh-my-droid-pipeline "build, test, and deploy"
 ```
 
-Use `${DROID_PLUGIN_ROOT}` to reference plugin files - this is automatically expanded.
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/oh-my-droid-autopilot` | Auto-route and execute with best droid |
+| `/oh-my-droid-ralph` | Persistent execution with verify/fix loops |
+| `/oh-my-droid-ultrawork` | Maximum parallel execution |
+| `/oh-my-droid-ecomode` | Token-efficient execution |
+| `/oh-my-droid-pipeline` | Sequential staged execution |
+
+## Skills
+
+| Skill | Description |
+|-------|-------------|
+| `autopilot` | Auto-route and execute autonomously |
+| `ralph` | Persistent verify/fix loops |
+| `ultrawork` | Maximum parallel task execution |
+| `ecomode` | Token-conscious execution |
+| `pipeline` | Multi-stage execution |
+
+## Droids
+
+| Droid | Complexity | Description |
+|-------|-----------|-------------|
+| `orchestrator` | Very High | Task breakdown and delegation |
+| `executor-low` | Low | Simple changes |
+| `executor-med` | Medium | Implementation/fix/debug |
+| `executor-high` | High | Complex implementation |
+| `basic-searcher` | Low | Simple file search |
+| `basic-reader` | Low | Code reading/explanation |
+| `hephaestus` | Very High | Complex architecture |
+| `prometheus` | High | Strategic planning |
+| `metis` | High | Pre-planning analysis |
+| `momus` | High | Plan validation |
+| `oracle` | High | Debugging expert |
+| `code-reviewer` | Medium | Code review |
+| `security-auditor` | Medium | Security review |
+| `explorer` | Low | Fast code search |
+| `librarian` | Medium | Research specialist |
+| `test-engineer` | Medium | Test creation |
+| `verifier` | Medium | Validation/verification |
+| `docs-writer` | Medium | Documentation |
 
 ## Structure
 
 ```
 oh-my-droid/
-├── .factory-plugin/plugin.json
-├── commands/
-├── skills/
-├── droids/
-├── hooks/
+├── commands/                 # User commands (*.md)
+├── skills/                  # AI skills (*/SKILL.md)
+├── droids/                  # Droid definitions (*.md)
+├── hooks/                   # Hook scripts
 │   ├── hooks.json
-│   ├── format-on-write.sh
-│   ├── lint-on-edit.sh
-│   ├── session-summary.sh
-│   ├── notification.sh
-│   └── protect-files.sh
+│   ├── intelligent-router.py
+│   ├── state-manager.py
+│   ├── background-manager.py
+│   └── *.sh
 └── README.md
 ```
+
+## Hooks Configuration
+
+Hooks are automatically loaded from the plugin:
+
+```json
+{
+  "PreToolUse": [
+    { "matcher": "Edit|Write", "hooks": [
+      { "type": "command", "command": "${DROID_PLUGIN_ROOT}/hooks/protect-files.sh ${file_path}" },
+      { "type": "command", "command": "${DROID_PLUGIN_ROOT}/hooks/format-on-write.sh ${file_path}" }
+    ]}
+  ],
+  "PostToolUse": [
+    { "matcher": "Edit|Write", "hooks": [
+      { "type": "command", "command": "${DROID_PLUGIN_ROOT}/hooks/lint-on-edit.sh ${file_path}" }
+    ]}
+  ],
+  "Stop": [
+    { "matcher": "", "hooks": [
+      { "type": "command", "command": "${DROID_PLUGIN_ROOT}/hooks/session-summary.sh" }
+    ]}
+  ]
+}
+```
+
+Use `${DROID_PLUGIN_ROOT}` to reference plugin files.

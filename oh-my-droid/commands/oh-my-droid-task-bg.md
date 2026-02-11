@@ -16,7 +16,7 @@ Launch background tasks that run in parallel using any available droid.
 ## Arguments
 
 - `description`: Short task description (3-5 words)
-- `prompt`: Detailed prompt for the agent
+- `prompt`: Detailed prompt for the droid
 
 ## Examples
 
@@ -46,24 +46,26 @@ To use different autonomy levels, use the Python command directly:
 
 ```bash
 # low - Safe analysis
-python hooks/background-manager.py launch "Safe analysis" "..." explore "main" low
+python hooks/background-manager.py launch "Safe analysis" "..." explorer "main" low
 
 # medium - Development (default)
-python hooks/background-manager.py launch "Dev task" "..." explore "main" medium
+python hooks/background-manager.py launch "Dev task" "..." explorer "main" medium
 
 # high - Production operations
-python hooks/background-manager.py launch "Deploy" "..." explore "main" high
+python hooks/background-manager.py launch "Deploy" "..." executor-high "main" high
 ```
 
 ## Available Droids
 
 Use these names in your prompts:
-- `explore` - Fast internal code exploration
+- `explorer` - Fast internal code exploration
 - `librarian` - External documentation search
 - `oracle` - Architecture and debugging
 - `code-reviewer` - Code review
 - `test-engineer` - Testing
 - `security-auditor` - Security analysis
+- `executor-med` - Implementation
+- `executor-high` - Complex implementation
 
 ## Checking Results
 

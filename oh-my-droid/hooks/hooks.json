@@ -1,12 +1,96 @@
 {
-  "description": "Background Task Manager for Oh-My-Droid",
+  "description": "Oh-My-Droid orchestration hooks with project memory",
   "hooks": {
-    "SubagentStop": [
+    "UserPromptSubmit": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "${DROID_PLUGIN_ROOT}/hooks/background-manager.py hook-complete"
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/keyword-detector.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/session-start.py\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/project-memory.py\" session-start",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/pre-tool-enforcer.py\"",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/post-tool-verifier.py\"",
+            "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/project-memory.py\" post-tool",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/background-manager.py\" hook-complete",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/project-memory.py\" pre-compact",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${DROID_PLUGIN_ROOT}/hooks/persistent-mode.py\"",
+            "timeout": 5
           }
         ]
       }

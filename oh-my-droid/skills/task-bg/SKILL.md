@@ -23,7 +23,7 @@ This skill runs `background-manager.py` to:
 ## Usage
 
 ```bash
-python hooks/background-manager.py launch "<description>" "<prompt>" "<agent>" "<parent_session>" [autonomy_level]
+python hooks/background-manager.py launch "<description>" "<prompt>" "<droid>" "<parent_session>" [autonomy_level]
 ```
 
 ## Arguments
@@ -31,8 +31,8 @@ python hooks/background-manager.py launch "<description>" "<prompt>" "<agent>" "
 | Arg | Description |
 |-----|-------------|
 | description | Short task description (3-5 words) |
-| prompt | Detailed prompt for the agent |
-| agent | Agent type (explore, librarian, etc.) |
+| prompt | Detailed prompt for the droid |
+| droid | Droid type (explore, librarian, executor-med, etc.) |
 | parent_session | Parent session ID |
 | autonomy_level | low, medium (default), or high |
 
@@ -40,13 +40,13 @@ python hooks/background-manager.py launch "<description>" "<prompt>" "<agent>" "
 
 ```bash
 # Launch with medium autonomy (default)
-python hooks/background-manager.py launch "Find Python files" "Find all .py files in current directory" explore "main"
+python hooks/background-manager.py launch "Find Python files" "Find all .py files in current directory" explorer "main"
 
 # Launch with low autonomy (read-only)
-python hooks/background-manager.py launch "Safe analysis" "Analyze the codebase structure" explore "main" low
+python hooks/background-manager.py launch "Safe analysis" "Analyze the codebase structure" explorer "main" low
 
 # Launch with high autonomy (can modify files)
-python hooks/background-manager.py launch "Implement feature" "Add authentication to the API" explore "main" high
+python hooks/background-manager.py launch "Implement feature" "Add authentication to the API" executor-high "main" high
 ```
 
 ## Checking Results
@@ -64,9 +64,9 @@ python hooks/background-manager.py output <task_id>
 Launch multiple tasks in sequence - they will all run in parallel:
 
 ```bash
-python hooks/background-manager.py launch "Find Python" "Find all .py files" explore "main"
-python hooks/background-manager.py launch "Find JSON" "Find all .json files" explore "main"
-python hooks/background-manager.py launch "Find MD" "Find all .md files" explore "main"
+python hooks/background-manager.py launch "Find Python" "Find all .py files" explorer "main"
+python hooks/background-manager.py launch "Find JSON" "Find all .json files" explorer "main"
+python hooks/background-manager.py launch "Find MD" "Find all .md files" explorer "main"
 ```
 
 All tasks run simultaneously in background.
