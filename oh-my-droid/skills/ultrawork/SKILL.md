@@ -31,6 +31,25 @@ Sequential task execution wastes time when tasks are independent. Ultrawork enab
 - Run quick commands in foreground, long operations can run via Task tool
 </Execution_Policy>
 
+<Parallel_Execution>
+Factory Droid does NOT support native background execution (`run_in_background: true`). For TRUE parallel execution of independent tasks, use `background-manager.py`:
+
+```bash
+# Launch multiple droids in TRUE parallel (fire ALL before checking ANY)
+python3 hooks/background-manager.py launch "Fix auth" "Fix auth module errors" executor-med "main"
+python3 hooks/background-manager.py launch "Fix API" "Fix API route errors" executor-med "main"
+python3 hooks/background-manager.py launch "Fix UI" "Fix frontend type errors" executor-med "main"
+
+# Monitor all running tasks
+python3 hooks/background-manager.py list
+
+# Check specific task output when done
+python3 hooks/background-manager.py output <task_id>
+```
+
+CRITICAL: Launch ALL independent tasks BEFORE checking any results. Do NOT launch-wait-launch sequentially.
+</Parallel_Execution>
+
 <Steps>
 1. **Classify tasks by independence**: Identify which can run in parallel vs which have dependencies
 2. **Route to correct droids**:

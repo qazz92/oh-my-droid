@@ -32,6 +32,25 @@ Complex tasks often fail silently: partial implementations get declared "done", 
 - State is tracked in `.omd/state/ralph-state.json`
 </Execution_Policy>
 
+<Parallel_Execution>
+Factory Droid does NOT support native background execution (`run_in_background: true`). For TRUE parallel execution of independent tasks, use `background-manager.py`:
+
+```bash
+# Launch multiple droids in TRUE parallel (fire ALL before checking ANY)
+python3 hooks/background-manager.py launch "Fix auth" "Fix auth module errors" executor-med "main"
+python3 hooks/background-manager.py launch "Fix API" "Fix API route errors" executor-med "main"
+python3 hooks/background-manager.py launch "Fix UI" "Fix frontend type errors" executor-med "main"
+
+# Monitor all running tasks
+python3 hooks/background-manager.py list
+
+# Check specific task output when done
+python3 hooks/background-manager.py output <task_id>
+```
+
+CRITICAL: Launch ALL independent tasks BEFORE checking any results. Do NOT launch-wait-launch sequentially.
+</Parallel_Execution>
+
 <Steps>
 1. **Review progress**: Check TODO list and any prior iteration state
 2. **Continue from where you left off**: Pick up incomplete tasks

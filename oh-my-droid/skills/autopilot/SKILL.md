@@ -30,6 +30,25 @@ Autopilot takes a brief product idea and autonomously handles the full lifecycle
 - State is tracked in `.omd/state/autopilot-state.json`
 </Execution_Policy>
 
+<Parallel_Execution>
+Factory Droid does NOT support native background execution (`run_in_background: true`). For TRUE parallel execution of independent tasks, use `background-manager.py`:
+
+```bash
+# Launch multiple droids in TRUE parallel (fire ALL before checking ANY)
+python3 hooks/background-manager.py launch "Fix auth" "Fix auth module errors" executor-med "main"
+python3 hooks/background-manager.py launch "Fix API" "Fix API route errors" executor-med "main"
+python3 hooks/background-manager.py launch "Fix UI" "Fix frontend type errors" executor-med "main"
+
+# Monitor all running tasks
+python3 hooks/background-manager.py list
+
+# Check specific task output when done
+python3 hooks/background-manager.py output <task_id>
+```
+
+CRITICAL: Launch ALL independent tasks BEFORE checking any results. Do NOT launch-wait-launch sequentially.
+</Parallel_Execution>
+
 <Task_Tool_Usage>
 CRITICAL: When spawning droids, you MUST use the Task tool with these EXACT parameters:
 - `subagent_type`: The droid name exactly as listed below (e.g., "prometheus", "verifier")
@@ -133,11 +152,34 @@ Why: Missing required `description` parameter.
 </Bad>
 </Examples>
 
+<Error_Handling>
+**Before Any Edit:**
+1. MUST Read the exact file content first (full file, not offset/limit)
+2. MUST verify the old_str exists EXACTLY as you plan to use it
+3. If Grep finds no matches, DO NOT attempt Edit - the issue may not exist
+
+**Edit Failures:**
+- If Edit fails with "content matches exactly": STOP, Read full file again, find exact old_str, then retry once
+- If Edit fails 2 times on same file: STOP and report to user - do not retry more
+- NEVER guess old_str - always copy exact content from Read output
+
+**Stuck Detection:**
+- If you attempt the same operation 2+ times, you are STUCK
+- When stuck: STOP immediately, report to user what you're stuck on
+- NEVER loop on failed operations
+
+**Phantom Issues:**
+- Before fixing an "error" from console/logs, VERIFY the error actually exists in the code
+- If Grep returns 0 matches: the issue does NOT exist in code - STOP and report false positive
+- NEVER attempt to fix something you cannot find in the code
+</Error_Handling>
+
 <Escalation_And_Stop_Conditions>
 - Stop and report when the same QA error persists across 3 cycles (fundamental issue requiring human input)
 - Stop and report when validation keeps failing after 3 re-validation rounds
 - Stop when the user says "stop", "cancel", or "abort"
 - If requirements are too vague, pause and ask the user for clarification before proceeding
+- Stop and ask user when stuck on the same edit/fix after 3 attempts
 </Escalation_And_Stop_Conditions>
 
 <Final_Checklist>
