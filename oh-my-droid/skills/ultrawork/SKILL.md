@@ -21,6 +21,21 @@ Ultrawork is a parallel execution engine that runs multiple droids simultaneousl
 - User needs session persistence for resume -- use `ralph`
 </Do_Not_Use_When>
 
+<What_You_MUST_Do>
+1. CLASSIFY - Identify which tasks are independent vs dependent
+2. ROUTE - Select correct droid tier for each task complexity
+3. FIRE ALL - Launch ALL independent tasks at once, BEFORE checking ANY
+4. WAIT - Only wait for dependent tasks after prerequisites complete
+5. VERIFY - Lightweight check: build passes, affected tests pass
+</What_You_MUST_Do>
+
+<What_You_MUST_NOT_Do>
+1. DO NOT serialize independent tasks - this defeats the purpose
+2. DO NOT use wrong tier (hephaestus for typos is wasteful)
+3. DO NOT skip verification - at minimum check build and tests
+4. DO NOT fire sequentially - fire all, then check all
+</What_You_MUST_NOT_Do>
+
 <Why_This_Exists>
 Sequential task execution wastes time when tasks are independent. Ultrawork enables firing multiple droids simultaneously, reducing total execution time. It is designed as a composable component that ralph and autopilot layer on top of.
 </Why_This_Exists>

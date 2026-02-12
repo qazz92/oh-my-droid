@@ -21,6 +21,22 @@ Task-bg launches droids as background tasks for parallel execution. Factory Droi
 - For full parallel orchestration -- use `ultrawork` which manages task-bg internally
 </Do_Not_Use_When>
 
+<What_You_MUST_Do>
+1. PARSE - Extract description, prompt, and droid selection
+2. LAUNCH - Run `python3 hooks/background-manager.py launch ...`
+3. TRACK - Task is recorded in `~/.factory/.omd/background-tasks/`
+4. MONITOR - Use `list` for summary or `status <id>` for specific task
+5. COLLECT - Use `output <id>` to read stdout/stderr
+6. REPORT - Summary of all background task outcomes
+</What_You_MUST_Do>
+
+<What_You_MUST_NOT_Do>
+1. DO NOT run quick operations in background
+2. DO NOT forget to collect results
+3. DO NOT skip cleanup of completed tasks
+4. DO NOT use for tasks needing interactive feedback
+</What_You_MUST_NOT_Do>
+
 <Why_Manual_Python>
 Factory Droid CLI does not support `run_in_background: true` like some other platforms. Instead, we use `background-manager.py` which:
 - Executes `droid exec --auto <autonomy> -- "<prompt>"` as a background process

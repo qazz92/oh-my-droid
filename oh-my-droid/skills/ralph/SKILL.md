@@ -21,6 +21,24 @@ Ralph is a persistence loop that keeps working on a task until it is fully compl
 - User wants manual control over completion -- use `ultrawork` directly
 </Do_Not_Use_When>
 
+<What_You_MUST_Do>
+1. REVIEW progress - Check TODO list and prior iteration state
+2. CONTINUE - Pick up incomplete tasks, do NOT restart from scratch
+3. DELEGATE IN PARALLEL - Fire ALL independent tasks simultaneously
+4. VERIFY WITH FRESH EVIDENCE - Run tests/build, show output
+5. SPAWN VERIFIER DROID - Mandatory independent verification
+6. CLEAN UP STATE - Delete .omd/state/ralph-state.json on approval
+</What_You_MUST_Do>
+
+<What_You_MUST_NOT_Do>
+1. DO NOT claim completion without verifier droid approval
+2. DO NOT use "should", "probably", "looks good" - show evidence
+3. DO NOT serialize independent tasks - run in parallel
+4. DO NOT reduce scope - deliver full implementation
+5. DO NOT delete tests to make them pass
+6. DO NOT retry same fix more than 3 times - report fundamental issue
+</What_You_MUST_NOT_Do>
+
 <Why_This_Exists>
 Complex tasks often fail silently: partial implementations get declared "done", tests get skipped, edge cases get forgotten. Ralph prevents this by looping until work is genuinely complete, requiring fresh verification evidence before allowing completion.
 </Why_This_Exists>

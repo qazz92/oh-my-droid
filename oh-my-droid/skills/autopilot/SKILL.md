@@ -22,6 +22,24 @@ Autopilot takes a brief product idea and autonomously handles the full lifecycle
 - Task is a quick fix or small bug -- use direct executor delegation
 </Do_Not_Use_When>
 
+<What_You_MUST_Do>
+1. COMPLETE ALL PHASES - Expansion, Planning, Execution, QA, Validation
+2. USE Task TOOL CORRECTLY - All three params: subagent_type, description, prompt
+3. FIRE PARALLEL TASKS - Launch ALL independent tasks BEFORE checking ANY results
+4. VERIFY WITH FRESH EVIDENCE - Run tests/build, show output, do NOT assume
+5. GET APPROVAL FROM ALL VALIDATORS - code-reviewer, security-auditor, verifier
+6. CLEAN UP STATE FILES - Delete .omd/state/autopilot-state.json on success
+</What_You_MUST_Do>
+
+<What_You_MUST_NOT_Do>
+1. DO NOT skip phases
+2. DO NOT claim completion without fresh verification output
+3. DO NOT serialize independent tasks - run in parallel
+4. DO NOT use "should", "probably", "seems to" - show evidence
+5. DO NOT proceed with invalid droid names in Task tool
+6. DO NOT loop on failed edits more than 2 times - report to user
+</What_You_MUST_NOT_Do>
+
 <Execution_Policy>
 - Each phase must complete before the next begins
 - Parallel execution is used within phases where possible (Phase 2 and Phase 4)

@@ -20,6 +20,21 @@ Pipeline chains multiple droids together in sequential or branching workflows wh
 - Task is a single-step operation -- delegate directly to a droid
 </Do_Not_Use_When>
 
+<What_You_MUST_Do>
+1. SELECT preset or parse custom pipeline definition
+2. EXECUTE Stage 1 and collect output
+3. PASS CONTEXT - Feed previous stage output to next stage
+4. REPEAT through all stages with context accumulation
+5. REPORT final summary with results from each stage
+</What_You_MUST_Do>
+
+<What_You_MUST_NOT_Do>
+1. DO NOT lose context - always pass previous stage output to next
+2. DO NOT skip stages
+3. DO NOT end without verification stage
+4. DO NOT use wrong preset for task type
+</What_You_MUST_NOT_Do>
+
 <Why_This_Exists>
 Complex tasks benefit from structured phases where specialist droids handle what they're best at. A researcher gathers context, a planner designs the approach, an executor implements, and a verifier checks. Pipeline ensures clean handoff between phases with full context passing.
 </Why_This_Exists>

@@ -20,6 +20,20 @@ Ecomode is a MODIFIER, not a standalone execution mode. It overrides default dro
 - Architecture decisions that affect the entire system
 </Do_Not_Use_When>
 
+<What_You_MUST_Do>
+1. ANALYZE task complexity honestly
+2. START with lowest viable droid tier
+3. ESCALATE only if droid fails or task clearly needs more
+4. VERIFY with lightweight checks (build + affected tests)
+</What_You_MUST_Do>
+
+<What_You_MUST_NOT_Do>
+1. DO NOT start with high-tier droids for simple tasks
+2. DO NOT escalate without clear reason
+3. DO NOT skip verification
+4. DO NOT use ecomode for security-sensitive or architectural work
+</What_You_MUST_NOT_Do>
+
 <Why_This_Exists>
 Not every task needs the most capable droid. Simple changes, searches, and documentation can be handled by lighter droids. Ecomode systematically downtiers droid selection to save tokens without sacrificing correctness for appropriate tasks.
 </Why_This_Exists>
