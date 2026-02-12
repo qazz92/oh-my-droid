@@ -117,37 +117,34 @@ def get_droid_summary(directory):
 def generate_message(tool_name, tool_output, tool_count, directory):
     message = ""
 
+    # PRINCIPLE: Only add messages when Factory Droid doesn't provide clear feedback
+    # If Factory Droid already shows a clear error, do NOT add duplicate message
+    
     if tool_name == "Execute":
-        if detect_failure(tool_output):
-            message = "Command failed. Please investigate the error and fix before continuing."
-        elif detect_background(tool_output):
-            message = "Background operation detected. Remember to verify results before proceeding."
+        # Factory Droid shows command errors clearly - only add for background detection
+        if detect_background(tool_output):
+            message = "Background operation detected. Remember to verify results when needed."
+        # If failed: Factory Droid already shows the error - do NOT add duplicate
 
     elif tool_name == "Task":
         droid_summary = get_droid_summary(directory)
-        if detect_failure(tool_output):
-            message = "Task delegation failed. Verify droid name and parameters."
-        elif detect_background(tool_output):
-            message = "Background task launched. Check results when needed."
-        elif tool_count > 5:
-            message = f"Multiple tasks delegated ({tool_count} total). Track their completion status."
+        # Only add summary info - Factory Droid shows delegation errors clearly
         if droid_summary:
-            message = f"{message} | {droid_summary}" if message else droid_summary
+            message = droid_summary
+        # If failed: Factory Droid already shows "Task delegation failed" - do NOT add duplicate
 
     elif tool_name in ("Edit", "MultiEdit"):
         # Only add message if it's a SUCCESS - Factory Droid already provides clear error messages
-        # Adding duplicate error messages causes confusion and loops
         if not detect_failure(tool_output):
             message = "Code modified. Verify changes work as expected before marking complete."
-        # If failed: do NOT add message - Factory Droid error is already clear
 
     elif tool_name == "Create":
-        if detect_failure(tool_output):
-            message = "Write operation failed. Check file permissions and directory existence."
-        else:
+        # Only add message on success - Factory Droid shows write errors clearly
+        if not detect_failure(tool_output):
             message = "File written. Test the changes to ensure they work correctly."
 
     elif tool_name == "TodoWrite":
+        # TodoWrite doesn't have clear Factory Droid messages, so we add context
         if re.search(r"created|added", tool_output, re.IGNORECASE):
             message = "Todo list updated. Proceed with next task on the list."
         elif re.search(r"completed|done", tool_output, re.IGNORECASE):
@@ -160,6 +157,7 @@ def generate_message(tool_name, tool_output, tool_count, directory):
             message = f"Extensive reading ({tool_count} files). Consider using Grep for pattern searches."
 
     elif tool_name == "Grep":
+        # Factory Droid doesn't show "no matches" clearly, so we add this
         if re.search(r"^0$|no matches", tool_output, re.IGNORECASE):
             message = "No matches found. Verify pattern syntax or try broader search."
 
