@@ -135,10 +135,11 @@ def generate_message(tool_name, tool_output, tool_count, directory):
             message = f"{message} | {droid_summary}" if message else droid_summary
 
     elif tool_name in ("Edit", "MultiEdit"):
-        if detect_failure(tool_output):
-            message = "Edit operation failed. Verify file exists and content matches exactly."
-        else:
+        # Only add message if it's a SUCCESS - Factory Droid already provides clear error messages
+        # Adding duplicate error messages causes confusion and loops
+        if not detect_failure(tool_output):
             message = "Code modified. Verify changes work as expected before marking complete."
+        # If failed: do NOT add message - Factory Droid error is already clear
 
     elif tool_name == "Create":
         if detect_failure(tool_output):
